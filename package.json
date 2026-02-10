@@ -4,6 +4,7 @@
   "description": "SOGE - Sistema Online de Gerenciamento",
   "main": "server.js",
   "scripts": {
+    "build": "echo \"no build step\"",
     "start": "node server.js"
   },
   "dependencies": {
