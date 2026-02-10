@@ -1,0 +1,36 @@
+<section class="grid">
+  <div class="card kpi">
+    <div class="kpi-label">Clientes</div>
+    <div class="kpi-value"><%= stats.clientsCount %></div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-label">Eventos</div>
+    <div class="kpi-value"><%= stats.eventsCount %></div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-label">Propostas</div>
+    <div class="kpi-value"><%= stats.proposalsCount %></div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-label">Pagamentos</div>
+    <div class="kpi-value"><%= stats.paymentsCount %></div>
+  </div>
+
+  <div class="card span-2">
+    <h2 class="card-title">Próximos passos</h2>
+    <ul class="list">
+      <li>Transformar Eventos em módulo real (listagem, cadastro, filtros).</li>
+      <li>Montar núcleo financeiro (plano de contas, lançamentos, fluxo de caixa).</li>
+      <li>Onboarding guiado e permissões por usuário/empresa.</li>
+    </ul>
+  </div>
+
+  <div class="card span-2">
+    <h2 class="card-title">Importação</h2>
+    <p class="muted">Sua base já está no banco. Use a importação para atualizar ou carregar novas bases.</p>
+    <a class="btn" href="/importar">Ir para Importar</a>
+  </div>
+</section>
