@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= title %> | SOGE</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title">SOGE</div>
+        <div class="brand-subtitle">Sistema Online de Gerenciamento</div>
+      </div>
+      <%- include("partials/sidebar", { current }) %>
+    </aside>
+
+    <div class="main">
+      <%- include("partials/header", { userLabel }) %>
+      <main class="content">
+        <%- body %>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
