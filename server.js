@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ===============================
-   CONFIGURAÇÕES
+   CONFIGURAÇÕES BÁSICAS
 ================================ */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -33,6 +33,7 @@ const DEMO_COMPANY_ID = 1;
    AUTENTICAÇÃO PROVISÓRIA
 ================================ */
 function requireAuth(req, res, next) {
+  // login real vem depois
   next();
 }
 
@@ -95,7 +96,8 @@ app.get("/clientes", requireAuth, async (req, res) => {
 
 /* EVENTOS */
 app.get("/eventos", requireAuth, async (req, res) => {
-  const [events] = await pool.query(`
+  const [events] = await pool.query(
+    `
     SELECT 
       e.id,
       e.event_date,
@@ -107,7 +109,9 @@ app.get("/eventos", requireAuth, async (req, res) => {
     WHERE e.company_id = ?
     ORDER BY e.event_date DESC
     LIMIT 200
-  `, [DEMO_COMPANY_ID]);
+    `,
+    [DEMO_COMPANY_ID]
+  );
 
   res.render("layout", {
     title: "Eventos",
