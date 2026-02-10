@@ -1,0 +1,12 @@
+<div class="card">
+  <h2 class="card-title">Importar base (.xlsx)</h2>
+  <p class="muted">
+    Importa na ordem correta: Clientes → Eventos → Propostas → Pagamentos, mantendo vínculos via external_id.
+  </p>
+
+  <form class="form" method="POST" action="/importar" enctype="multipart/form-data">
+    <label class="label">Arquivo (.xlsx)</label>
+    <input class="input" type="file" name="file" accept=".xlsx" required />
+    <button class="btn" type="submit">Importar</button>
+  </form>
+</div>
