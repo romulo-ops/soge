@@ -17,9 +17,10 @@
     </aside>
 
     <div class="main">
-      <%- include("partials/header", { userLabel }) %>
+      <%- include("partials/header", { title, userLabel }) %>
+
       <main class="content">
-        <%- body %>
+        <%- include(page) %>
       </main>
     </div>
   </div>
