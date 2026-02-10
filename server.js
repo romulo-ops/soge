@@ -3,6 +3,10 @@ const path = require("path");
 const mysql = require("mysql2/promise");
 
 const app = express();
+
+/* ===============================
+   PORTA (HOSTINGER)
+================================ */
 const PORT = process.env.PORT || 3000;
 
 /* ===============================
@@ -25,6 +29,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
+  queueLimit: 0
 });
 
 const DEMO_COMPANY_ID = 1;
@@ -33,7 +38,6 @@ const DEMO_COMPANY_ID = 1;
    AUTENTICAÇÃO PROVISÓRIA
 ================================ */
 function requireAuth(req, res, next) {
-  // login real vem depois
   next();
 }
 
@@ -47,79 +51,94 @@ app.get("/", (req, res) => {
 
 /* DASHBOARD */
 app.get("/dashboard", requireAuth, async (req, res) => {
-  const [[clients]] = await pool.query(
-    "SELECT COUNT(*) AS total FROM clients WHERE company_id=?",
-    [DEMO_COMPANY_ID]
-  );
-  const [[events]] = await pool.query(
-    "SELECT COUNT(*) AS total FROM events WHERE company_id=?",
-    [DEMO_COMPANY_ID]
-  );
-  const [[proposals]] = await pool.query(
-    "SELECT COUNT(*) AS total FROM proposals WHERE company_id=?",
-    [DEMO_COMPANY_ID]
-  );
-  const [[payments]] = await pool.query(
-    "SELECT COUNT(*) AS total FROM payments WHERE company_id=?",
-    [DEMO_COMPANY_ID]
-  );
+  try {
+    const [[clients]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM clients WHERE company_id=?",
+      [DEMO_COMPANY_ID]
+    );
+    const [[events]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM events WHERE company_id=?",
+      [DEMO_COMPANY_ID]
+    );
+    const [[proposals]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM proposals WHERE company_id=?",
+      [DEMO_COMPANY_ID]
+    );
+    const [[payments]] = await pool.query(
+      "SELECT COUNT(*) AS total FROM payments WHERE company_id=?",
+      [DEMO_COMPANY_ID]
+    );
 
-  res.render("layout", {
-    title: "Dashboard",
-    userLabel: "Empresa Demo",
-    current: "dashboard",
-    page: "dashboard",
-    stats: {
-      clientsCount: clients.total,
-      eventsCount: events.total,
-      proposalsCount: proposals.total,
-      paymentsCount: payments.total,
-    },
-  });
+    res.render("layout", {
+      title: "Dashboard",
+      userLabel: "Empresa Demo",
+      current: "dashboard",
+      page: "dashboard",
+      stats: {
+        clientsCount: clients.total,
+        eventsCount: events.total,
+        proposalsCount: proposals.total,
+        paymentsCount: payments.total
+      }
+    });
+  } catch (err) {
+    console.error("Erro no dashboard:", err);
+    res.status(500).send("Erro interno no dashboard");
+  }
 });
 
 /* CLIENTES */
 app.get("/clientes", requireAuth, async (req, res) => {
-  const [clients] = await pool.query(
-    "SELECT id, external_id, name, phone, email FROM clients WHERE company_id=? ORDER BY id DESC LIMIT 200",
-    [DEMO_COMPANY_ID]
-  );
+  try {
+    const [clients] = await pool.query(
+      "SELECT id, external_id, name, phone, email FROM clients WHERE company_id=? ORDER BY id DESC LIMIT 200",
+      [DEMO_COMPANY_ID]
+    );
 
-  res.render("layout", {
-    title: "Clientes",
-    userLabel: "Empresa Demo",
-    current: "clientes",
-    page: "clientes",
-    clients,
-  });
+    res.render("layout", {
+      title: "Clientes",
+      userLabel: "Empresa Demo",
+      current: "clientes",
+      page: "clientes",
+      clients
+    });
+  } catch (err) {
+    console.error("Erro em clientes:", err);
+    res.status(500).send("Erro interno em clientes");
+  }
 });
 
 /* EVENTOS */
 app.get("/eventos", requireAuth, async (req, res) => {
-  const [events] = await pool.query(
-    `
-    SELECT 
-      e.id,
-      e.event_date,
-      e.event_type,
-      e.status,
-      c.name AS client_name
-    FROM events e
-    LEFT JOIN clients c ON c.id = e.client_id
-    WHERE e.company_id = ?
-    ORDER BY e.event_date DESC
-    LIMIT 200
-    `,
-    [DEMO_COMPANY_ID]
-  );
+  try {
+    const [events] = await pool.query(
+      `
+      SELECT 
+        e.id,
+        e.event_date,
+        e.event_type,
+        e.status,
+        c.name AS client_name
+      FROM events e
+      LEFT JOIN clients c ON c.id = e.client_id
+      WHERE e.company_id = ?
+      ORDER BY e.event_date DESC
+      LIMIT 200
+      `,
+      [DEMO_COMPANY_ID]
+    );
 
-  res.render("layout", {
-    title: "Eventos",
-    userLabel: "Empresa Demo",
-    current: "eventos",
-    page: "eventos",
-    events,
-  });
+    res.render("layout", {
+      title: "Eventos",
+      userLabel: "Empresa Demo",
+      current: "eventos",
+      page: "eventos",
+      events
+    });
+  } catch (err) {
+    console.error("Erro em eventos:", err);
+    res.status(500).send("Erro interno em eventos");
+  }
 });
 
 /* IMPORTAR */
@@ -128,12 +147,12 @@ app.get("/importar", requireAuth, (req, res) => {
     title: "Importar",
     userLabel: "Empresa Demo",
     current: "importar",
-    page: "importar",
+    page: "importar"
   });
 });
 
 /* ===============================
-   SERVIDOR
+   START DO SERVIDOR
 ================================ */
 app.listen(PORT, () => {
   console.log("SOGE rodando na porta", PORT);
