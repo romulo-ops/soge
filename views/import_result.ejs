@@ -1,0 +1,16 @@
+<div class="card">
+  <h2 class="card-title">Importação concluída</h2>
+  <p class="muted">Abas detectadas: <%= sheetNames.join(', ') %></p>
+
+  <ul class="list">
+    <li>Clientes processados: <strong><%= counts.clients %></strong></li>
+    <li>Eventos processados: <strong><%= counts.events %></strong></li>
+    <li>Propostas processadas: <strong><%= counts.proposals %></strong></li>
+    <li>Pagamentos processados: <strong><%= counts.payments %></strong></li>
+  </ul>
+
+  <div style="margin-top:14px;">
+    <a class="btn" href="/clientes">Ver clientes</a>
+    <a class="btn secondary" href="/dashboard">Voltar ao dashboard</a>
+  </div>
+</div>
