@@ -1,0 +1,10 @@
+<nav class="nav">
+  <a class="nav-item <%= current==='dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+  <a class="nav-item <%= current==='clientes' ? 'active' : '' %>" href="/clientes">Clientes</a>
+  <a class="nav-item <%= current==='eventos' ? 'active' : '' %>" href="/eventos">Eventos</a>
+  <a class="nav-item <%= current==='importar' ? 'active' : '' %>" href="/importar">Importar</a>
+
+  <div class="nav-sep"></div>
+
+  <a class="nav-item" href="/logout">Sair</a>
+</nav>
