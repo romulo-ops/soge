@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ===============================
-   CONFIGURAÇÕES BÁSICAS
+   CONFIGURAÇÕES
 ================================ */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -30,10 +30,9 @@ const pool = mysql.createPool({
 const DEMO_COMPANY_ID = 1;
 
 /* ===============================
-   AUTENTICAÇÃO SIMPLES (PROVISÓRIA)
+   AUTENTICAÇÃO PROVISÓRIA
 ================================ */
 function requireAuth(req, res, next) {
-  // enquanto não existe login real, libera tudo
   next();
 }
 
@@ -41,12 +40,11 @@ function requireAuth(req, res, next) {
    ROTAS
 ================================ */
 
-// REDIRECIONA RAIZ
 app.get("/", (req, res) => {
   res.redirect("/dashboard");
 });
 
-// DASHBOARD
+/* DASHBOARD */
 app.get("/dashboard", requireAuth, async (req, res) => {
   const [[clients]] = await pool.query(
     "SELECT COUNT(*) AS total FROM clients WHERE company_id=?",
@@ -79,7 +77,7 @@ app.get("/dashboard", requireAuth, async (req, res) => {
   });
 });
 
-// CLIENTES
+/* CLIENTES */
 app.get("/clientes", requireAuth, async (req, res) => {
   const [clients] = await pool.query(
     "SELECT id, external_id, name, phone, email FROM clients WHERE company_id=? ORDER BY id DESC LIMIT 200",
@@ -95,7 +93,32 @@ app.get("/clientes", requireAuth, async (req, res) => {
   });
 });
 
-// IMPORTAR (TELA)
+/* EVENTOS */
+app.get("/eventos", requireAuth, async (req, res) => {
+  const [events] = await pool.query(`
+    SELECT 
+      e.id,
+      e.event_date,
+      e.event_type,
+      e.status,
+      c.name AS client_name
+    FROM events e
+    LEFT JOIN clients c ON c.id = e.client_id
+    WHERE e.company_id = ?
+    ORDER BY e.event_date DESC
+    LIMIT 200
+  `, [DEMO_COMPANY_ID]);
+
+  res.render("layout", {
+    title: "Eventos",
+    userLabel: "Empresa Demo",
+    current: "eventos",
+    page: "eventos",
+    events,
+  });
+});
+
+/* IMPORTAR */
 app.get("/importar", requireAuth, (req, res) => {
   res.render("layout", {
     title: "Importar",
